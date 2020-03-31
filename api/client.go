@@ -925,7 +925,11 @@ func (c *Client) PutModel(obj models.Model) error {
 }
 
 func (c *Client) Websocket(at string) (*websocket.Conn, error) {
-	ep, err := c.UrlForProxy(c.urlProxy, at)
+	subpath := path.Join(APIPATH, at)
+	if c.urlProxy != "" {
+		subpath = path.Join(subpath, c.urlProxy)
+	}
+	ep, err := url.ParseRequestURI(c.endpoint + subpath)
 	if err != nil {
 		return nil, err
 	}
